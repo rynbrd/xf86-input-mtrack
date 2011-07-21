@@ -90,7 +90,7 @@ void mconfig_init(struct MConfig* cfg,
 		cfg->touch_type = MCFG_SCALE;
 		cfg->touch_min = caps->abs[MTDEV_TOUCH_MAJOR].minimum;
 		cfg->touch_max = caps->abs[MTDEV_TOUCH_MAJOR].maximum;
-		xf86Msg(X_INFO, "Touchpad supports poop and approaching touches.\n");
+		xf86Msg(X_INFO, "Touchpad supports regular and approaching touches.\n");
 		xf86Msg(X_INFO, "  touch_min = %d, touch_max = %d\n", cfg->touch_min, cfg->touch_max);
 	}
 	else if (caps->has_abs[MTDEV_TOUCH_MAJOR]) {

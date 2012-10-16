@@ -42,7 +42,7 @@ int mtouch_open(struct MTouch* mt, int fd)
 	ret = mtdev_open(&mt->dev, mt->fd);
 	if (ret)
 		goto error;
-	mconfig_init(&mt->cfg, &mt->caps);
+	mconfig_init(mt->mcfg, &mt->caps);
 	hwstate_init(&mt->hs, &mt->caps);
 	mtstate_init(&mt->state);
 	gestures_init(mt);
@@ -76,7 +76,7 @@ int mtouch_read(struct MTouch* mt)
 	int ret = hwstate_modify(&mt->hs, &mt->dev, mt->fd, &mt->caps);
 	if (ret <= 0)
 		return ret;
-	mtstate_extract(&mt->state, &mt->cfg, &mt->hs, &mt->caps);
+	mtstate_extract(&mt->state, mt->mcfg, &mt->hs, &mt->caps);
 	gestures_extract(mt);
 	return 1;
 }

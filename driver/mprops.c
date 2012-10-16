@@ -196,7 +196,7 @@ void mprops_init(struct MConfig* cfg, InputInfoPtr local) {
 
 int mprops_set_property(DeviceIntPtr dev, Atom property, XIPropertyValuePtr prop, BOOL checkonly) {
 	InputInfoPtr local = dev->public.devicePrivate;
-	struct MConfig* cfg = &((struct MTouch*)local->private)->cfg;
+	struct MConfig* cfg = ((struct MTouch*)local->private)->mcfg;
 
 	uint8_t* ivals8;
 	uint16_t* ivals16;

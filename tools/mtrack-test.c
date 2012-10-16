@@ -74,6 +74,14 @@ static void print_gestures(const struct Gestures* gs)
 static void loop_device(int fd)
 {
 	struct MTouch mt;
+
+	mt.cfg = calloc(1, sizeof(struct MConfig));
+	if(!mt.cfg) {
+		fprintf(stderr, "error: could not allocate memory for "
+						"struct MConfig.\n");
+		return;
+	}
+
 	if (mtouch_configure(&mt, fd)) {
 		fprintf(stderr, "error: could not configure device\n");
 		return;
@@ -83,7 +91,7 @@ static void loop_device(int fd)
 		return;
 	}
 	
-	mconfig_defaults(&mt.cfg);
+	mconfig_defaults(mt.cfg);
 	printf("width:  %d\n", mt.hs.max_x);
 	printf("height: %d\n", mt.hs.max_y);
 

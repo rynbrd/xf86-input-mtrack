@@ -189,7 +189,7 @@ Integer value. A value of 0 disables scrolling down. Defaults to 5.
 For two finger scrolling. The button that is triggered by scrolling left.
 Integer value. A value of 0 disables scrolling left. Defaults to 6.
 
-**ScrollDownButton** - 
+**ScrollRightButton** - 
 For two finger scrolling. The button that is triggered by scrolling right.
 Integer value. A value of 0 disables scrolling right. Defaults to 7.
 
@@ -266,21 +266,21 @@ The tap-to-drag timeout. This is how long the driver will wait after a single
 tap for a movement event before sending the click. Integer value representing
 milliseconds. Defaults to 350.
 
-**TapDragWait**
+**TapDragWait** - 
 How long after detecting movement to trigger a button down event. During this
 time pointer movement will be disabled. Increase this value if you find you're
 draggin when you don't wish it. Integer value representing milliseconds.
 Defaults to 40.
 
-**TapDragDist**
+**TapDragDist** - 
 How far the finger is allowed to move during drag wait time. If the finger
 moves farther than this distance during the wait time then dragging will be
 canceled and pointer movement will resume. Integer value. Defaults to 200.
 
-**AxisXInvert**
+**AxisXInvert** - 
 Whether or not to invert the X axis. Boolean value. Defaults to false.
 
-**AxisYInvert**
+**AxisYInvert** - 
 Whether or not to invert the Y axis. Boolean value. Defaults to false.
 
 [1]: http://www.kernel.org/doc/Documentation/input/multi-touch-protocol.txt     "Kernel Multitouch Protocol"

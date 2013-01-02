@@ -199,7 +199,7 @@ static void buttons_update(struct Gestures* gs,
 		earliest = -1;
 		latest = -1;
 		foreach_bit(i, ms->touch_used) {
-			if (GETBIT(ms->touch[i].state, MT_INVALID))
+			if (!cfg->button_zones && GETBIT(ms->touch[i].state, MT_INVALID))
 				continue;
 			if (cfg->button_integrated && !GETBIT(ms->touch[i].flags, GS_BUTTON))
 				SETBIT(ms->touch[i].flags, GS_BUTTON);
@@ -224,7 +224,7 @@ static void buttons_update(struct Gestures* gs,
 
 				if (zones > 0) {
 					width = ((double)cfg->pad_width)/((double)zones);
-					pos = cfg->pad_width / 2 + ms->touch[earliest].x;
+					pos = cfg->pad_width / 2 + ms->touch[latest].x;
 #ifdef DEBUG_GESTURES
 					xf86Msg(X_INFO, "buttons_update: pad width %d, zones %d, zone width %f, x %d\n",
 						cfg->pad_width, zones, width, pos);
@@ -232,7 +232,7 @@ static void buttons_update(struct Gestures* gs,
 					for (i = 0; i < zones; i++) {
 						left = width*i;
 						right = width*(i+1);
-						if (pos >= left && pos <= right) {
+						if ((i == 0 || pos >= left) && (i == zones - 1 || pos <= right)) {
 #ifdef DEBUG_GESTURES
 							xf86Msg(X_INFO, "buttons_update: button %d, left %d, right %d (found)\n", i, left, right);
 #endif

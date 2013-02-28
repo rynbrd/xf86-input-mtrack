@@ -62,8 +62,8 @@ Defines the pressure at which a finger is detected as a release. This is a
 percentage represented as an integer. Default is 5.
 
 **IgnoreThumb** - 
-Whether or not to ignore touches that are determined to be thumbs. Boolean
-value. Defaults to false.
+Whether or not to ignore touches that are determined to be thumbs in the
+context of moving, or clicking. Boolean value. Defaults to false.
 
 **IgnorePalm** - 
 Whether or not to ignore touches that are determined to be palms. Boolean

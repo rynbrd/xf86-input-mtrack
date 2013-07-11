@@ -190,23 +190,26 @@ static int device_close(LocalDevicePtr local)
 	return Success;
 }
 
-static void handle_gestures(LocalDevicePtr local,
-			const struct Gestures* gs)
+static void handle_gestures(LocalDevicePtr local, const struct Gestures* gs)
 {
+	const struct MTouch *mt = local->private;
 	static bitmask_t buttons_prev = 0U;
 	int i;
+	int sendMotionEvent = FALSE;
 
 	for (i = 0; i < 32; i++) {
 		if (GETBIT(gs->buttons, i) == GETBIT(buttons_prev, i))
 			continue;
 		if (GETBIT(gs->buttons, i)) {
 			xf86PostButtonEvent(local->dev, FALSE, i+1, 1, 0, 0);
+			sendMotionEvent = TRUE;
 #if DEBUG_DRIVER
 			xf86Msg(X_INFO, "button %d down\n", i+1);
 #endif
 		}
 		else {
 			xf86PostButtonEvent(local->dev, FALSE, i+1, 0, 0, 0);
+			sendMotionEvent = TRUE;
 #if DEBUG_DRIVER
 			xf86Msg(X_INFO, "button %d up\n", i+1);
 #endif
@@ -214,8 +217,16 @@ static void handle_gestures(LocalDevicePtr local,
 	}
 	buttons_prev = gs->buttons;
 
-	if (gs->move_dx != 0 || gs->move_dy != 0)
-		xf86PostMotionEvent(local->dev, 0, 0, 2, gs->move_dx, gs->move_dy);
+	if (gs->move_dx != 0 || gs->move_dy != 0){
+		sendMotionEvent = TRUE;
+		if(mt->cfg.absolute_mode == FALSE)
+			xf86PostMotionEvent(local->dev, 0, 0, 2, gs->move_dx, gs->move_dy);
+	}
+	/* Give the HW coordinates to Xserver as absolute coordinates, these coordinates
+	 * are not scaled, this is oke if the touchscreen has the same resolution as the display.
+	 */
+	if(mt->cfg.absolute_mode == TRUE && sendMotionEvent == TRUE)
+		xf86PostMotionEvent(local->dev, 1, 0, 2, mt->state.touch[0].x, mt->state.touch[0].y);
 }
 
 /* called for each full received packet from the touchpad */
@@ -227,6 +238,31 @@ static void read_input(LocalDevicePtr local)
 	if (mtouch_delayed(mt))
 		handle_gestures(local, &mt->gs);
 }
+
+static int switch_mode(ClientPtr client, DeviceIntPtr dev, int mode)
+{
+	LocalDevicePtr local = dev->public.devicePrivate;
+	struct MTouch *mt = local->private;
+
+	switch (mode) {
+	case Absolute:
+		mt->cfg.absolute_mode = TRUE;
+		xf86Msg(X_INFO, "Switing to absolute mode\n");
+		break;
+
+	case Relative:
+		mt->cfg.absolute_mode = FALSE;
+		xf86Msg(X_INFO, "Switing to relative mode\n");
+		break;
+
+	default:
+		return XI_BadMode;
+		break;
+	}
+
+	return Success;
+}
+
 
 static Bool device_control(DeviceIntPtr dev, int mode)
 {
@@ -264,7 +300,7 @@ static int preinit(InputDriverPtr drv, InputInfoPtr pInfo, int flags)
 	pInfo->type_name = XI_TOUCHPAD;
 	pInfo->device_control = device_control;
 	pInfo->read_input = read_input;
-	pInfo->switch_mode = 0;
+	pInfo->switch_mode = switch_mode;
 
     xf86CollectInputOptions(pInfo, NULL);
     xf86OptionListReport(pInfo->options);
@@ -288,6 +324,7 @@ static InputInfoPtr preinit(InputDriverPtr drv, IDevPtr dev, int flags)
 	local->type_name = XI_TOUCHPAD;
 	local->device_control = device_control;
 	local->read_input = read_input;
+	local->switch_mode = switch_mode;
 	local->private = mt;
 	local->flags = XI86_POINTER_CAPABLE | XI86_SEND_DRAG_EVENTS;
 	local->conf_idev = dev;

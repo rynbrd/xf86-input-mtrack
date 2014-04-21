@@ -91,6 +91,11 @@ The minimum size of what's considered a palm. Palms are expected to be very
 large on the trackpad. This is represented as a percentage of the maximum touch
 value and is dependent on the trackpad hardware. Integer value. Defaults to 40.
 
+**TopEdge** -
+The size of an area at the top of the trackpad where the new touches are ignored
+(fingers traveling into this area from below will still be tracked). This is
+Represented as a percentage of the total trackpad height. Defaults to 10.
+
 **BottomEdge** -
 The size of an area at the bottom of the trackpad where new touches are ignored
 (fingers traveling into this area from above will still be tracked). This is
@@ -189,7 +194,7 @@ Integer value. A value of 0 disables scrolling down. Defaults to 5.
 For two finger scrolling. The button that is triggered by scrolling left.
 Integer value. A value of 0 disables scrolling left. Defaults to 6.
 
-**ScrollDownButton** - 
+**ScrollRightButton** - 
 For two finger scrolling. The button that is triggered by scrolling right.
 Integer value. A value of 0 disables scrolling right. Defaults to 7.
 

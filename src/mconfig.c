@@ -33,6 +33,7 @@ void mconfig_defaults(struct MConfig* cfg)
 	cfg->thumb_ratio = DEFAULT_THUMB_RATIO;
 	cfg->thumb_size = DEFAULT_THUMB_SIZE;
 	cfg->palm_size = DEFAULT_PALM_SIZE;
+	cfg->top_edge = DEFAULT_TOP_EDGE;
 	cfg->bottom_edge = DEFAULT_BOTTOM_EDGE;
 
 	// Configure Gestures
@@ -129,6 +130,7 @@ void mconfig_configure(struct MConfig* cfg,
 	cfg->thumb_ratio = CLAMPVAL(xf86SetIntOption(opts, "ThumbRatio", DEFAULT_THUMB_RATIO), 0, 100);
 	cfg->thumb_size = CLAMPVAL(xf86SetIntOption(opts, "ThumbSize", DEFAULT_THUMB_SIZE), 0, 100);
 	cfg->palm_size = CLAMPVAL(xf86SetIntOption(opts, "PalmSize", DEFAULT_PALM_SIZE), 0, 100);
+	cfg->top_edge = CLAMPVAL(xf86SetIntOption(opts, "TopEdge", DEFAULT_TOP_EDGE), 0, 100);
 	cfg->bottom_edge = CLAMPVAL(xf86SetIntOption(opts, "BottomEdge", DEFAULT_BOTTOM_EDGE), 0, 100);
 
 	// Configure Gestures

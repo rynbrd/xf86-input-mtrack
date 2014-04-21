@@ -226,7 +226,7 @@ static void touches_update(struct MTState* ms,
 			n = touch_append(ms, cfg, caps, hs, i);
 
 		if (n >= 0) {
-			// Track and invalidate thumb, palm, and bottom edge touches.
+			// Track and invalidate thumb, palm, and bottom and top edge touches.
 			if (is_thumb(cfg, &hs->data[i]))
 				SETBIT(ms->touch[n].state, MT_THUMB);
 			else
@@ -243,11 +243,17 @@ static void touches_update(struct MTState* ms,
 			}
 			else
 				CLEARBIT(ms->touch[n].state, MT_BOTTOM_EDGE);
-			
+			if (ms->touch[n].y < (100 - cfg->top_edge)*cfg->pad_height/100) {
+				if (GETBIT(ms->touch[n].state, MT_NEW))
+					SETBIT(ms->touch[n].state, MT_TOP_EDGE);
+			}
+			else
+				CLEARBIT(ms->touch[n].state, MT_TOP_EDGE);
 			MODBIT(ms->touch[n].state, MT_INVALID,
 				GETBIT(ms->touch[n].state, MT_THUMB) && cfg->ignore_thumb ||
 				GETBIT(ms->touch[n].state, MT_PALM) && cfg->ignore_palm ||
-				GETBIT(ms->touch[n].state, MT_BOTTOM_EDGE));
+				GETBIT(ms->touch[n].state, MT_BOTTOM_EDGE) ||
+				GETBIT(ms->touch[n].state, MT_TOP_EDGE));
 			
 			disable |= cfg->disable_on_thumb && GETBIT(ms->touch[n].state, MT_THUMB);
 			disable |= cfg->disable_on_palm && GETBIT(ms->touch[n].state, MT_PALM);

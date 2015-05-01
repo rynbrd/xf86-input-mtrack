@@ -38,6 +38,7 @@ struct MTouch {
 	struct MTState state;
 	struct MConfig cfg;
 	struct Gestures gs;
+	ValuatorMask* vm;
 };
 
 int mtouch_configure(struct MTouch* mt, int fd);

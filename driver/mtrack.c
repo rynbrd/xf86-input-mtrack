@@ -38,6 +38,8 @@
 #define SCALE_THRESHOLD 0.15
 #define ROTATE_THRESHOLD 0.15
 
+#define NUM_AXES 4
+
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 12
 typedef InputInfoPtr LocalDevicePtr;
 #endif
@@ -53,11 +55,13 @@ static void pointer_control(DeviceIntPtr dev, PtrCtrl *ctrl)
 }
 
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
-static void initAxesLabels(Atom map[2])
+static void initAxesLabels(Atom map[NUM_AXES])
 {
 	memset(map, 0, 2 * sizeof(Atom));
 	PROPMAP(map, 0, AXIS_LABEL_PROP_REL_X);
 	PROPMAP(map, 1, AXIS_LABEL_PROP_REL_Y);
+	PROPMAP(map, 2, AXIS_LABEL_PROP_REL_HSCROLL);
+	PROPMAP(map, 3, AXIS_LABEL_PROP_REL_VSCROLL);
 }
 
 static void initButtonLabels(Atom map[DIM_BUTTON])
@@ -90,7 +94,7 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
 	};
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
-	Atom axes_labels[2], btn_labels[DIM_BUTTON];
+	Atom axes_labels[NUM_AXES], btn_labels[DIM_BUTTON];
 	initAxesLabels(axes_labels);
 	initButtonLabels(btn_labels);
 #endif
@@ -124,7 +128,7 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 				btmap, DIM_BUTTON, btn_labels,
 				pointer_control,
 				GetMotionHistorySize(),
-				2, axes_labels);
+				NUM_AXES, axes_labels);
 #else
 #error "Unsupported ABI_XINPUT_VERSION"
 #endif
@@ -152,6 +156,8 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 #else
 				   1, 0, 1);
 #endif
+	SetScrollValuator(dev, 2, SCROLL_TYPE_HORIZONTAL, mt->cfg.scroll_dist, 0);
+	SetScrollValuator(dev, 3, SCROLL_TYPE_VERTICAL, mt->cfg.scroll_dist, 0);
 	xf86InitValuatorDefaults(dev, 1);
 	mprops_init(&mt->cfg, local);
 	XIRegisterPropertyHandler(dev, mprops_set_property, NULL, NULL);
@@ -214,8 +220,20 @@ static void handle_gestures(LocalDevicePtr local,
 	}
 	buttons_prev = gs->buttons;
 
-	if (gs->move_dx != 0 || gs->move_dy != 0)
-		xf86PostMotionEvent(local->dev, 0, 0, 2, gs->move_dx, gs->move_dy);
+	struct MTouch *mt = local->private;
+	ValuatorMask* mask = mt->vm;
+	valuator_mask_zero(mask);
+
+	if (gs->move_dx)
+		valuator_mask_set_double(mask, 0, gs->move_dx);
+	if (gs->move_dy)
+		valuator_mask_set_double(mask, 1, gs->move_dy);
+	if (gs->move_axes[GS_AXIS_SCROLL_VERTICAL])
+		valuator_mask_set_double(mask, 3, gs->move_axes[GS_AXIS_SCROLL_VERTICAL]);
+	if (gs->move_axes[GS_AXIS_SCROLL_HORIZONTAL])
+		valuator_mask_set_double(mask, 2, gs->move_axes[GS_AXIS_SCROLL_HORIZONTAL]);
+
+	xf86PostMotionEventM(local->dev, Relative, mask);
 }
 
 /* called for each full received packet from the touchpad */
@@ -266,10 +284,11 @@ static int preinit(InputDriverPtr drv, InputInfoPtr pInfo, int flags)
 	pInfo->read_input = read_input;
 	pInfo->switch_mode = 0;
 
-    xf86CollectInputOptions(pInfo, NULL);
-    xf86OptionListReport(pInfo->options);
-    xf86ProcessCommonOptions(pInfo, pInfo->options);
-    mconfig_configure(&mt->cfg, pInfo->options);
+	xf86CollectInputOptions(pInfo, NULL);
+	xf86OptionListReport(pInfo->options);
+	xf86ProcessCommonOptions(pInfo, pInfo->options);
+	mconfig_configure(&mt->cfg, pInfo->options);
+	mt->vm = valuator_mask_new(1);
 
 	return Success;
 }
@@ -296,6 +315,7 @@ static InputInfoPtr preinit(InputDriverPtr drv, IDevPtr dev, int flags)
 	xf86OptionListReport(local->options);
 	xf86ProcessCommonOptions(local, local->options);
 	mconfig_configure(&mt->cfg, local->options);
+	mt->vm = NULL;
 
 	local->flags |= XI86_CONFIGURED;
  error:
@@ -305,6 +325,9 @@ static InputInfoPtr preinit(InputDriverPtr drv, IDevPtr dev, int flags)
 
 static void uninit(InputDriverPtr drv, InputInfoPtr local, int flags)
 {
+	struct MTouch *mt = local->private;
+	if (mt->vm)
+		valuator_mask_free(&mt->vm);
 	free(local->private);
 	local->private = 0;
 	xf86DeleteInput(local, 0);

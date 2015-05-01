@@ -183,7 +183,7 @@ This value is the amount of time you must be performing the new gesture before
 it is triggered. This prevents accidental touches from triggering other
 gestures. Integer value representing milliseconds. Defaults to 100.
 
-**ScrollDistance** -
+**ScrollHighPrecision** -
 For two finger scrolling. Whether to generate high precision scroll events.
 Boolean value. Defaults to 1.
 

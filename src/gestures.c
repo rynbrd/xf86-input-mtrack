@@ -388,7 +388,7 @@ static void clear_move(struct Gestures* gs)
 	gs->move_dy = 0;
 	int i;
 	for (i = 0; i < GS_NUM_AXES; ++i)
-			gs->move_axes[i] = 0;
+		gs->move_axes[i] = 0;
 }
 
 static void trigger_move(struct Gestures* gs,
@@ -435,7 +435,7 @@ static void trigger_scroll(struct Gestures* gs,
 		if (cfg->scroll_high_prec)
 		{
 			if ((distx == 0.0) && (disty == 0.0))
-					return;
+				return;
 
 			gs->move_axes[GS_AXIS_SCROLL_HORIZONTAL] = distx;
 			gs->move_axes[GS_AXIS_SCROLL_VERTICAL] = disty;

@@ -17,14 +17,15 @@ License
 This software is licensed under the [GPLv2][2] and is a fork of the
 [xf86-input-multitouch][3] driver by Henrik Rydberg.
 
-Binaries
---------
+Building and Installing
+-----------------------
+This is a standard autoconf package. So:
 
-* [Gentoo][5]
-* [Ubuntu][6]
-* [Arch][7]
+    ./configure
+    make && make install
 
-Arch package contributed and maintained by Mike Zackles.
+It is likely that you will need to change system-dependent paths such as the
+xorg module directory. See `configure --help` for options.
 
 Configuration
 -------------
@@ -255,7 +256,7 @@ value. A value of 0 disables rotation left. Defaults to 14.
 
 **RotateRightButton** - 
 For two finger rotation. The button that is triggered by rotating right. Integer
-value. A value of 0 disables rotation right. Defaults to 14.
+value. A value of 0 disables rotation right. Defaults to 15.
 
 **TapDragEnable** - 
 Whether or not to enable tap-to-drag functionality. Boolean value. Defaults to
@@ -287,7 +288,3 @@ Whether or not to invert the Y axis. Boolean value. Defaults to false.
 [2]: http://www.gnu.org/licenses/gpl-2.0.html                                   "GNU General Public License, version 2"
 [3]: http://bitmath.org/code/multitouch/                                        "xf86-input-multitouch website"
 [4]: http://bitmath.org/code/mtdev/                                             "mtdev library website"
-[5]: http://www.dev.fatalmachine.org/xf86-input-mtrack/gentoo                   "Gentoo Ebuilds"
-[6]: http://www.dev.fatalmachine.org/xf86-input-mtrack/ubuntu                   "Ubuntu Packages"
-[7]: http://aur.archlinux.org/packages.php?ID=48505                             "Arch Package"
-

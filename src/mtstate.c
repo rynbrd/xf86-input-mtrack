@@ -40,8 +40,9 @@ static int is_touch(const struct MConfig* cfg,
 {
 	if (cfg->touch_type == MCFG_SCALE)
 		return percentage(hw->touch_major, hw->width_major) > cfg->touch_down;
-	else if (cfg->touch_type == MCFG_SIZE)
-		return touch_range_ratio(cfg, hw->touch_major) > cfg->touch_down;
+	else if (cfg->touch_type == MCFG_SIZE){
+		return touch_range_ratio(cfg, hw->touch_major) >= cfg->touch_down;
+  }
 	else if (cfg->touch_type == MCFG_PRESSURE)
 		return touch_range_ratio(cfg, hw->pressure) > cfg->touch_down;
 	else
@@ -286,23 +287,23 @@ static void mtstate_output(const struct MTState* ms,
 	foreach_bit(i, ms->touch_used) {
 		if (GETBIT(ms->touch[i].state, MT_RELEASED)) {
 			timersub(&hs->evtime, &ms->touch[i].down, &tv);
-			xf86Msg(X_INFO, "  released p(%d, %d) d(%+d, %+d) dir(%f) down(%llu) time(%lld)\n",
+			xf86Msg(X_INFO, "  released p(%d, %d) d(%d, %d) dir(%f) down(%llu) time(%lld)\n",
 						ms->touch[i].x, ms->touch[i].y, ms->touch[i].dx, ms->touch[i].dy,
 						ms->touch[i].direction, timertoms(&ms->touch[i].down), timertoms(&tv));
 		}
 		else if (GETBIT(ms->touch[i].state, MT_NEW)) {
-			xf86Msg(X_INFO, "  new      p(%d, %d) d(%+d, %+d) dir(%f) down(%llu)\n",
+			xf86Msg(X_INFO, "  new      p(%d, %d) d(%d, %d) dir(%f) down(%llu)\n",
 						ms->touch[i].x, ms->touch[i].y, ms->touch[i].dx, ms->touch[i].dy,
 						ms->touch[i].direction, timertoms(&ms->touch[i].down));
 		}
 		else if (GETBIT(ms->touch[i].state, MT_INVALID)) {
 			timersub(&hs->evtime, &ms->touch[i].down, &tv);
-			xf86Msg(X_INFO, "  invalid  p(%d, %d) d(%+d, %+d) dir(%f) down(%llu) time(%lld)\n",
+			xf86Msg(X_INFO, "  invalid  p(%d, %d) d(%d, %d) dir(%f) down(%llu) time(%lld)\n",
 						ms->touch[i].x, ms->touch[i].y, ms->touch[i].dx, ms->touch[i].dy,
 						ms->touch[i].direction, timertoms(&ms->touch[i].down), timertoms(&tv));
 		}
 		else {
-			xf86Msg(X_INFO, "  touching p(%d, %d) d(%+d, %+d) dir(%f) down(%llu)\n",
+			xf86Msg(X_INFO, "  touching p(%d, %d) d(%d, %d) dir(%f) down(%llu)\n",
 						ms->touch[i].x, ms->touch[i].y, ms->touch[i].dx, ms->touch[i].dy,
 						ms->touch[i].direction, timertoms(&ms->touch[i].down));
 		}

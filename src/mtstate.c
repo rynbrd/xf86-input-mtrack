@@ -121,10 +121,11 @@ static int is_edge(const struct MConfig* cfg, const struct FingerState* hw)
 {
 	int edge_width = (cfg->edge_size * cfg->pad_width) / 100;
 	int edge_height = (cfg->edge_size * cfg->pad_height) / 100;
-	return ((hw->position_x < edge_width) ||
-		(hw->position_x >= (cfg->pad_width-edge_width)) ||
-		(hw->position_y < edge_height) ||
-		(hw->position_y >= (cfg->pad_height-edge_height)));
+	return
+		hw->position_x < cfg->x_min + edge_width ||
+		hw->position_x > cfg->x_min - edge_width + cfg->pad_width ||
+		hw->position_y < cfg->y_min + edge_height ||
+		hw->position_y > cfg->y_min - edge_height + cfg->pad_height;
 }
 
 /* Find a touch by its tracking ID.  Return -1 if not found.
@@ -154,6 +155,7 @@ static int touch_append(struct MTState* ms,
 	if (n < 0)
 		xf86Msg(X_WARNING, "Too many touches to track. Ignoring touch %d.\n", fs->tracking_id);
 	else {
+		/* map origin of mtrack coordinate system to middle point of device */
 		x = get_cap_x(caps, fs->position_x);
 		y = get_cap_y(caps, fs->position_y);
 		x = cfg->axis_x_invert ? -x : x;
@@ -184,8 +186,10 @@ static void touch_update(struct MTState* ms,
 			int touch)
 {
 	int x, y;
+	/* map origin of mtrack coordinate system to middle point of device */
 	x = get_cap_x(caps, fs->position_x);
 	y = get_cap_y(caps, fs->position_y);
+
 	x = cfg->axis_x_invert ? -x : x;
 	y = cfg->axis_y_invert ? -y : y;
 	ms->touch[touch].dx = x - ms->touch[touch].x;

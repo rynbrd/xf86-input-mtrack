@@ -382,12 +382,22 @@ static void tapping_update(struct Gestures* gs,
 	}
 }
 
+static void clear_move(struct Gestures* gs)
+{
+	gs->move_dx = 0;
+	gs->move_dy = 0;
+	int i;
+	for (i = 0; i < GS_NUM_AXES; ++i)
+		gs->move_axes[i] = 0;
+}
+
 static void trigger_move(struct Gestures* gs,
 			const struct MConfig* cfg,
 			int dx, int dy)
 {
 	if ((gs->move_type == GS_MOVE || !timercmp(&gs->time, &gs->move_wait, <)) && (dx != 0 || dy != 0)) {
 		if (trigger_drag_start(gs, cfg, dx, dy)) {
+			clear_move(gs);
 			gs->move_dx = (int)(dx*cfg->sensitivity);
 			gs->move_dy = (int)(dy*cfg->sensitivity);
 			gs->move_type = GS_MOVE;
@@ -405,36 +415,48 @@ static void trigger_move(struct Gestures* gs,
 
 static void trigger_scroll(struct Gestures* gs,
 			const struct MConfig* cfg,
-			double dist, int dir)
+			double dist,
+			double distx, double disty,
+			int dir)
 {
 	if (gs->move_type == GS_SCROLL || !timercmp(&gs->time, &gs->move_wait, <)) {
 		struct timeval tv_tmp;
 		trigger_drag_stop(gs, 1);
 		if (gs->move_type != GS_SCROLL || gs->move_dir != dir)
 			gs->move_dist = 0;
-		gs->move_dx = 0;
-		gs->move_dy = 0;
+		clear_move(gs);
 		gs->move_type = GS_SCROLL;
 		gs->move_dist += (int)ABSVAL(dist);
 		gs->move_dir = dir;
 		gs->move_speed = dist/timertomicro(&gs->dt);
 		timeraddms(&gs->time, cfg->gesture_wait, &gs->move_wait);
 
-		if (gs->move_dist >= cfg->scroll_dist) {
-			gs->move_dist = MODVAL(gs->move_dist, cfg->scroll_dist);
-			timeraddms(&gs->time, cfg->gesture_hold, &tv_tmp);
-			if (dir == TR_DIR_UP)
-				trigger_button_click(gs, cfg->scroll_up_btn - 1, &tv_tmp);
-			else if (dir == TR_DIR_DN)
-				trigger_button_click(gs, cfg->scroll_dn_btn - 1, &tv_tmp);
-			else if (dir == TR_DIR_LT)
-				trigger_button_click(gs, cfg->scroll_lt_btn - 1, &tv_tmp);
-			else if (dir == TR_DIR_RT)
-				trigger_button_click(gs, cfg->scroll_rt_btn - 1, &tv_tmp);
+
+		if (cfg->scroll_high_prec)
+		{
+			if ((distx == 0.0) && (disty == 0.0))
+				return;
+
+			gs->move_axes[GS_AXIS_SCROLL_HORIZONTAL] = distx;
+			gs->move_axes[GS_AXIS_SCROLL_VERTICAL] = disty;
+			gs->move_dist = 0;
+		} else {
+			if (gs->move_dist >= cfg->scroll_dist) {
+				gs->move_dist = MODVAL(gs->move_dist, cfg->scroll_dist);
+				timeraddms(&gs->time, cfg->gesture_hold, &tv_tmp);
+				if (dir == TR_DIR_UP)
+					trigger_button_click(gs, cfg->scroll_up_btn - 1, &tv_tmp);
+				else if (dir == TR_DIR_DN)
+					trigger_button_click(gs, cfg->scroll_dn_btn - 1, &tv_tmp);
+				else if (dir == TR_DIR_LT)
+					trigger_button_click(gs, cfg->scroll_lt_btn - 1, &tv_tmp);
+				else if (dir == TR_DIR_RT)
+					trigger_button_click(gs, cfg->scroll_rt_btn - 1, &tv_tmp);
+			}
 		}
 #ifdef DEBUG_GESTURES
-		xf86Msg(X_INFO, "trigger_scroll: scrolling %+f in direction %d (at %d of %d) (speed %f)\n",
-			dist, dir, gs->move_dist, cfg->scroll_dist, gs->move_speed);
+		xf86Msg(X_INFO, "trigger_scroll: scrolling %f (%f, %f) in direction %d (at %d of %d) (speed %f)\n",
+			dist, distx, disty, dir, gs->move_dist, cfg->scroll_dist, gs->move_speed);
 #endif
 	}
 }
@@ -448,8 +470,7 @@ static void trigger_swipe(struct Gestures* gs,
 		trigger_drag_stop(gs, 1);
 		if (gs->move_type != GS_SWIPE || gs->move_dir != dir)
 			gs->move_dist = 0;
-		gs->move_dx = 0;
-		gs->move_dy = 0;
+		clear_move(gs);
 		gs->move_type = GS_SWIPE;
 		gs->move_dist += (int)ABSVAL(dist);
 		gs->move_dir = dir;
@@ -502,8 +523,7 @@ static void trigger_scale(struct Gestures* gs,
 		trigger_drag_stop(gs, 1);
 		if (gs->move_type != GS_SCALE || gs->move_dir != dir)
 			gs->move_dist = 0;
-		gs->move_dx = 0;
-		gs->move_dy = 0;
+		clear_move(gs);
 		gs->move_type = GS_SCALE;
 		gs->move_dist += (int)ABSVAL(dist);
 		gs->move_dir = dir;
@@ -533,8 +553,7 @@ static void trigger_rotate(struct Gestures* gs,
 		trigger_drag_stop(gs, 1);
 		if (gs->move_type != GS_ROTATE || gs->move_dir != dir)
 			gs->move_dist = 0;
-		gs->move_dx = 0;
-		gs->move_dy = 0;
+		clear_move(gs);
 		gs->move_type = GS_ROTATE;
 		gs->move_dist += (int)ABSVAL(dist);
 		gs->move_dir = dir;
@@ -549,7 +568,7 @@ static void trigger_rotate(struct Gestures* gs,
 				trigger_button_click(gs, cfg->rotate_rt_btn - 1, &tv_tmp);
 		}
 #ifdef DEBUG_GESTURES
-		xf86Msg(X_INFO, "trigger_rotate: rotating %+f in direction %d (at %d of %d) (speed %f)\n",
+		xf86Msg(X_INFO, "trigger_rotate: rotating %f in direction %d (at %d of %d) (speed %f)\n",
 			dist, dir, gs->move_dist, cfg->rotate_dist, gs->move_speed);
 #endif
 	}
@@ -558,8 +577,7 @@ static void trigger_rotate(struct Gestures* gs,
 static void trigger_reset(struct Gestures* gs)
 {
 	trigger_drag_stop(gs, 0);
-	gs->move_dx = 0;
-	gs->move_dy = 0;
+	clear_move(gs);
 	gs->move_type = GS_NONE;
 	gs->move_dist = 0;
 	gs->move_dir = TR_NONE;
@@ -675,10 +693,12 @@ static void moving_update(struct Gestures* gs,
 	else if (count == 2 && cfg->trackpad_disable < 1) {
 		// scroll, scale, or rotate
 		if ((dir = get_scroll_dir(touches[0], touches[1])) != TR_NONE) {
+			double distx = (touches[0]->dx + touches[1]->dx) * 0.5;
+			double disty = (touches[0]->dy + touches[1]->dy) * 0.5;
 			dist = hypot(
 				touches[0]->dx + touches[1]->dx,
 				touches[0]->dy + touches[1]->dy);
-			trigger_scroll(gs, cfg, dist/2, dir);
+			trigger_scroll(gs, cfg, dist/2, distx, disty, dir);
 		}
 		else if ((dir = get_rotate_dir(touches[0], touches[1])) != TR_NONE) {
 			dist = ABSVAL(hypot(touches[0]->dx, touches[0]->dy)) +

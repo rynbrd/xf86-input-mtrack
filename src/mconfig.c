@@ -53,6 +53,7 @@ void mconfig_defaults(struct MConfig* cfg)
 	cfg->tap_dist = DEFAULT_TAP_DIST;
 	cfg->gesture_hold = DEFAULT_GESTURE_HOLD;
 	cfg->gesture_wait = DEFAULT_GESTURE_WAIT;
+	cfg->scroll_high_prec = DEFAULT_SCROLL_HIGH_PREC;
 	cfg->scroll_dist = DEFAULT_SCROLL_DIST;
 	cfg->scroll_up_btn = DEFAULT_SCROLL_UP_BTN;
 	cfg->scroll_dn_btn = DEFAULT_SCROLL_DN_BTN;
@@ -150,6 +151,7 @@ void mconfig_configure(struct MConfig* cfg,
 	cfg->tap_dist = MAXVAL(xf86SetIntOption(opts, "MaxTapMove", DEFAULT_TAP_DIST), 1);
 	cfg->gesture_hold = MAXVAL(xf86SetIntOption(opts, "GestureClickTime", DEFAULT_GESTURE_HOLD), 1);
 	cfg->gesture_wait = MAXVAL(xf86SetIntOption(opts, "GestureWaitTime", DEFAULT_GESTURE_WAIT), 0);
+	cfg->scroll_high_prec = CLAMPVAL(xf86SetIntOption(opts, "ScrollHighPrecision", DEFAULT_SCROLL_HIGH_PREC), 0, 1);
 	cfg->scroll_dist = MAXVAL(xf86SetIntOption(opts, "ScrollDistance", DEFAULT_SCROLL_DIST), 1);
 	cfg->scroll_up_btn = CLAMPVAL(xf86SetIntOption(opts, "ScrollUpButton", DEFAULT_SCROLL_UP_BTN), 0, 32);
 	cfg->scroll_dn_btn = CLAMPVAL(xf86SetIntOption(opts, "ScrollDownButton", DEFAULT_SCROLL_DN_BTN), 0, 32);

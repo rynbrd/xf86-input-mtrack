@@ -227,7 +227,6 @@ static void handle_gestures(LocalDevicePtr local,
 	}
 	buttons_prev = gs->buttons;
 
-	struct MTouch *mt = local->private;
 	ValuatorMask* mask = mt->vm;
 	valuator_mask_zero(mask);
 

@@ -34,7 +34,7 @@
 #define DEFAULT_THUMB_RATIO 70
 #define DEFAULT_THUMB_SIZE 25
 #define DEFAULT_PALM_SIZE 40
-#define DEFAULT_BOTTOM_EDGE 10
+#define DEFAULT_EDGE_SIZE 10
 #define DEFAULT_BUTTON_ENABLE 1
 #define DEFAULT_BUTTON_INTEGRATED 1
 #define DEFAULT_BUTTON_ZONES 0
@@ -108,7 +108,7 @@ struct MConfig {
 	int thumb_ratio;	// Ratio of width to length that makes a touch a thumb. 0 - 100
 	int thumb_size;		// Minimum touch size for a thumb. 0 - 100
 	int palm_size;		// Minimum touch size for a palm. 0 - 100
-	int bottom_edge;		// Percent of bottom of trackpad to ignore for new touches. 0 - 100
+	int edge_size;		// Percent of edge of trackpad to ignore for new touches. 0 - 100
 	int axis_x_invert;	// Whether or not to invert the x axis. 0 or 1.
 	int axis_y_invert;	// Whether or not to invert the y axis. 0 or 1.
 
@@ -164,6 +164,7 @@ struct MConfig {
 	int drag_wait;			// How long to wait before triggering button down? >= 0
 	int drag_dist;			// How far is the finger allowed to move during wait time? >= 0
 	double sensitivity;		// Mouse movement multiplier. >= 0
+	int absolute_mode;		// Should absolute mode be enabled ? 0 or 1
 };
 
 /* Load the MConfig struct with its defaults.

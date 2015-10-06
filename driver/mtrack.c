@@ -57,7 +57,7 @@ static void pointer_control(DeviceIntPtr dev, PtrCtrl *ctrl)
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
 static void initAxesLabels(Atom map[NUM_AXES])
 {
-	memset(map, 0, 2 * sizeof(Atom));
+	memset(map, 0, NUM_AXES * sizeof(Atom));
 	PROPMAP(map, 0, AXIS_LABEL_PROP_REL_X);
 	PROPMAP(map, 1, AXIS_LABEL_PROP_REL_Y);
 	PROPMAP(map, 2, AXIS_LABEL_PROP_REL_HSCROLL);

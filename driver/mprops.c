@@ -439,7 +439,7 @@ int mprops_set_property(DeviceIntPtr dev, Atom property, XIPropertyValuePtr prop
 			return BadMatch;
 
 		if (!checkonly) {
-			cfg->scroll_high_prec = ivals32[0];
+			cfg->scroll_high_prec = ivals8[0];
 #ifdef DEBUG_PROPS
 			xf86Msg(X_INFO, "mtrack: set high precision scrolling to %d\n",
 				cfg->scroll_high_prec);

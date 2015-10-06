@@ -62,9 +62,9 @@
 #define MTRACK_PROP_PALM_SIZE "Trackpad Palm Size"
 // int, 2 value - button hold, wait time
 #define MTRACK_PROP_GESTURE_SETTINGS "Trackpad Gesture Settings"
-// int, 1 value - distance before a scroll event is triggered
-#define MTRACK_PROP_SCROLL_HIGH_PRECISION "Trackpad High Precision Scrolling"
 // int, 1 value - enable high precision scrolling
+#define MTRACK_PROP_SCROLL_HIGH_PRECISION "Trackpad High Precision Scrolling"
+// int, 1 value - distance before a scroll event is triggered
 #define MTRACK_PROP_SCROLL_DIST "Trackpad Scroll Distance"
 // int, 4 values - up button, down button, left button, right button
 #define MTRACK_PROP_SCROLL_BUTTONS "Trackpad Scroll Buttons"

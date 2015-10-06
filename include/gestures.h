@@ -61,7 +61,7 @@ struct Gestures {
 
 	/* Scroll vertical, horizontal.
 	 */
-	double move_axes[2];
+	double move_axes[GS_NUM_AXES];
 
 	/* Current time and time delta. Updated after each event and after sleeping.
 	 */

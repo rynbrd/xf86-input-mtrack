@@ -224,10 +224,10 @@ static void buttons_update(struct Gestures* gs,
 
 				if (zones > 0) {
 					width = ((double)cfg->pad_width)/((double)zones);
-					pos = cfg->pad_width / 2 + ms->touch[earliest].x;
+					pos = ms->touch[earliest].x - cfg->pad_xmin;
 #ifdef DEBUG_GESTURES
-					xf86Msg(X_INFO, "buttons_update: pad width %d, zones %d, zone width %f, x %d\n",
-						cfg->pad_width, zones, width, pos);
+					xf86Msg(X_INFO, "buttons_update: pad width %d (min %d), zones %d, zone width %f, x %d\n",
+						cfg->pad_width, cfg->pad_xmin, zones, width, pos);
 #endif
 					for (i = 0; i < zones; i++) {
 						left = width*i;

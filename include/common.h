@@ -33,6 +33,7 @@
 #include <xf86Xinput.h>
 #include <errno.h>
 #include <mtdev-mapping.h>
+#include <mtdev-plumbing.h>
 #include <stdint.h>
 #include <sys/time.h>
 

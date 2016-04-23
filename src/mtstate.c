@@ -237,7 +237,7 @@ static void touches_update(struct MTState* ms,
 			else
 				CLEARBIT(ms->touch[n].state, MT_PALM);
 			
-			if (ms->touch[n].y > (100 - cfg->bottom_edge)*cfg->pad_height/100) {
+			if ((ms->touch[n].y - get_cap_ymin(caps)) > (100 - cfg->bottom_edge)*cfg->pad_height/100) {
 				if (GETBIT(ms->touch[n].state, MT_NEW))
 					SETBIT(ms->touch[n].state, MT_BOTTOM_EDGE);
 			}

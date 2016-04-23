@@ -119,6 +119,15 @@ those ClickFinger values that are enabled. So setting ClickFinger1 to 0 and
 enabling the other two will create two zones, one for ClickFinger2 and one for
 ClickFinger3. Boolean value. Defaults to false.
 
+**BottomEdgeZonesEnable** -
+Whether to enable button zones in the bottom edge.  If this feature is
+enabled then touches in the BottomEdge region determine which button
+is sent.  The vertical division of the zones is as for
+ButtonZonesEnable.  If there is no touch in the bottom edge, then
+button 0 will be sent (or the button according to ButtonZonesEnable,
+if that is enabled).  This is particularly useful for clickpads with
+integrated buttons. Defaults to false.
+
 **ButtonTouchExpire** - 
 How long (in ms) to consider a touching finger as part of button emulation. A
 value of 0 will not expire touches. Integer value. Defaults to 100.

@@ -151,6 +151,18 @@ int get_cap_ymid(const struct Capabilities *cap)
 	return (y->maximum + y->minimum) >> 1;
 }
 
+int get_cap_xmin(const struct Capabilities *cap)
+{
+	const struct input_absinfo *x = &cap->abs[MTDEV_POSITION_X];
+	return x->minimum;
+}
+
+int get_cap_ymin(const struct Capabilities *cap)
+{
+	const struct input_absinfo *y = &cap->abs[MTDEV_POSITION_Y];
+	return y->minimum;
+}
+
 int get_cap_xflip(const struct Capabilities *cap, int x)
 {
 	const struct input_absinfo *i = &cap->abs[MTDEV_POSITION_X];

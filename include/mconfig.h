@@ -38,6 +38,7 @@
 #define DEFAULT_BUTTON_ENABLE 1
 #define DEFAULT_BUTTON_INTEGRATED 1
 #define DEFAULT_BUTTON_ZONES 0
+#define DEFAULT_BOTTOM_EDGE_ZONES 0
 #define DEFAULT_BUTTON_1TOUCH 3
 #define DEFAULT_BUTTON_2TOUCH 2
 #define DEFAULT_BUTTON_3TOUCH 0
@@ -96,6 +97,8 @@ struct MConfig {
 	int touch_max;		// Maximum touch value.
 	int pad_width;		// Width of the touchpad.
 	int pad_height;		// Height of the touchpad.
+	int pad_xmin;		// Minimum x coordinate.
+	int pad_ymin;		// Minimum y coordinate.
 
 	// Set by config.
 	int touch_down;		// When is a finger touching? 0 - 100 (percentage)
@@ -119,6 +122,7 @@ struct MConfig {
 	int button_integrated;	// Is the button under the touchpad? 0 or 1
 	int button_expire;		// How long to consider a touch for button emulation. >= 0
 	int button_zones;		// Use button zones for emulation?
+	int bottom_edge_zones;		// Use bottom edge zones for emulation?
 	int button_1touch;		// What button to emulate when one finger is on the
 							// pad or the first zone is clicked? 0 to 32
 	int button_2touch;		// What button to emulate when two fingers are on the

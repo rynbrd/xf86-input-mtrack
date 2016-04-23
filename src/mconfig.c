@@ -41,6 +41,7 @@ void mconfig_defaults(struct MConfig* cfg)
 	cfg->button_integrated = DEFAULT_BUTTON_INTEGRATED;
 	cfg->button_expire = DEFAULT_BUTTON_EXPIRE;
 	cfg->button_zones = DEFAULT_BUTTON_ZONES;
+	cfg->bottom_edge_zones = DEFAULT_BOTTOM_EDGE_ZONES;
 	cfg->button_1touch = DEFAULT_BUTTON_1TOUCH;
 	cfg->button_2touch = DEFAULT_BUTTON_2TOUCH;
 	cfg->button_3touch = DEFAULT_BUTTON_3TOUCH;
@@ -85,6 +86,8 @@ void mconfig_init(struct MConfig* cfg,
 	cfg->touch_minor = caps->has_abs[MTDEV_TOUCH_MINOR];
 	cfg->pad_width = get_cap_xsize(caps);
 	cfg->pad_height = get_cap_ysize(caps);
+	cfg->pad_xmin = get_cap_xmin(caps);
+	cfg->pad_ymin = get_cap_ymin(caps);
 	
 	if (caps->has_abs[MTDEV_TOUCH_MAJOR] && caps->has_abs[MTDEV_WIDTH_MAJOR]) {
 		cfg->touch_type = MCFG_SCALE;
@@ -137,6 +140,7 @@ void mconfig_configure(struct MConfig* cfg,
 	cfg->button_integrated = xf86SetBoolOption(opts, "ButtonIntegrated", DEFAULT_BUTTON_INTEGRATED);
 	cfg->button_expire = MAXVAL(xf86SetIntOption(opts, "ButtonTouchExpire", DEFAULT_BUTTON_EXPIRE), 0);
 	cfg->button_zones = xf86SetBoolOption(opts, "ButtonZonesEnable", DEFAULT_BUTTON_ZONES);
+	cfg->bottom_edge_zones = xf86SetBoolOption(opts, "BottomEdgeZonesEnable", DEFAULT_BOTTOM_EDGE_ZONES);
 	cfg->button_1touch = CLAMPVAL(xf86SetIntOption(opts, "ClickFinger1", DEFAULT_BUTTON_1TOUCH), 0, 32);
 	cfg->button_2touch = CLAMPVAL(xf86SetIntOption(opts, "ClickFinger2", DEFAULT_BUTTON_2TOUCH), 0, 32);
 	cfg->button_3touch = CLAMPVAL(xf86SetIntOption(opts, "ClickFinger3", DEFAULT_BUTTON_3TOUCH), 0, 32);

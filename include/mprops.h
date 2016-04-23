@@ -44,7 +44,7 @@
 #define MTRACK_PROP_PRESSURE "Trackpad Touch Pressure"
 // int, 2 values - enable buttons, has integrated button
 #define MTRACK_PROP_BUTTON_SETTINGS "Trackpad Button Settings"
-// int, 3 values - enable button zones, button move emulation, emulation touch expiration
+// int, 3-4 values - enable button zones, button move emulation, emulation touch expiration[, enable bottom edge zones]
 #define MTRACK_PROP_BUTTON_EMULATE_SETTINGS "Trackpad Button Emulation Settings"
 // int, 3 values - button to emulate with 1 touch, 2 touches, 3 touches
 #define MTRACK_PROP_BUTTON_EMULATE_VALUES "Trackpad Button Emulation Values"

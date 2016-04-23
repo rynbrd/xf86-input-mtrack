@@ -210,9 +210,19 @@ static void buttons_update(struct Gestures* gs,
 		}
 
 		if (emulate) {
+			int try_zone;
+			int pos;
+
 			if (cfg->button_zones && earliest >= 0) {
-				int zones, left, right, pos;
+				pos = ms->touch[earliest].x;
+				try_zone = 1;
+			}
+
+			if (try_zone) {
+				int zones, left, right;
 				double width;
+
+				pos -= cfg->pad_xmin;
 
 				zones = 0;
 				if (cfg->button_1touch > 0)
@@ -224,7 +234,6 @@ static void buttons_update(struct Gestures* gs,
 
 				if (zones > 0) {
 					width = ((double)cfg->pad_width)/((double)zones);
-					pos = ms->touch[earliest].x - cfg->pad_xmin;
 #ifdef DEBUG_GESTURES
 					xf86Msg(X_INFO, "buttons_update: pad width %d (min %d), zones %d, zone width %f, x %d\n",
 						cfg->pad_width, cfg->pad_xmin, zones, width, pos);

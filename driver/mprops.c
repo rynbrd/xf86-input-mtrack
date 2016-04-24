@@ -91,7 +91,7 @@ void mprops_init(struct MConfig* cfg, InputInfoPtr local) {
 	ivals[0] = cfg->trackpad_disable;
 	mprops.trackpad_disable = atom_init_integer(local->dev, MTRACK_PROP_TRACKPAD_DISABLE, 1, ivals, 8);
 
-	fvals[0] = (float)cfg->sensitivity;
+	fvals[0] = (float)mconfig_get_sensitivity(cfg);
 	mprops.sensitivity = atom_init_float(local->dev, MTRACK_PROP_SENSITIVITY, 1, fvals, mprops.float_type);
 
 	ivals[0] = cfg->touch_down;
@@ -230,9 +230,9 @@ int mprops_set_property(DeviceIntPtr dev, Atom property, XIPropertyValuePtr prop
 			return BadMatch;
 
 		if (!checkonly) {
-			cfg->sensitivity = fvals[0];
+			mconfig_set_sensitivity(cfg, fvals[0]);
 #ifdef DEBUG_PROPS
-			xf86Msg(X_INFO, "mtrack: set sensitivity to %f\n", cfg->sensitivity);
+			xf86Msg(X_INFO, "mtrack: set sensitivity to %f\n", mconfig_get_sensitivity(cfg));
 #endif
 		}
 	}

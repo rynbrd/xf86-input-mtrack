@@ -161,12 +161,22 @@ struct MConfig {
 	int drag_timeout;		// How long to wait for a move after tapping? > 0
 	int drag_wait;			// How long to wait before triggering button down? >= 0
 	int drag_dist;			// How far is the finger allowed to move during wait time? >= 0
-	double sensitivity;		// Mouse movement multiplier. >= 0
+	double sensitivity_val;		// Mouse movement multiplier. >= 0
 };
 
 /* Load the MConfig struct with its defaults.
  */
 void mconfig_defaults(struct MConfig* cfg);
+
+/* Set and read ->sensitivity_val
+ *
+ * Configuration code must always use these get/set functions.
+ *
+ * Runtime code which uses the sensitivity to process events is
+ * expected to access the value in cfg directly.
+ */
+void mconfig_set_sensitivity(struct MConfig *cfg, double sensitivity);
+double mconfig_get_sensitivity(const struct MConfig *cfg);
 
 /* Initialize the MConfig struct.
  */

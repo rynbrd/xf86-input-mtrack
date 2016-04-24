@@ -388,8 +388,8 @@ static void trigger_move(struct Gestures* gs,
 {
 	if ((gs->move_type == GS_MOVE || !timercmp(&gs->time, &gs->move_wait, <)) && (dx != 0 || dy != 0)) {
 		if (trigger_drag_start(gs, cfg, dx, dy)) {
-			gs->move_dx = (int)(dx*cfg->sensitivity);
-			gs->move_dy = (int)(dy*cfg->sensitivity);
+			gs->move_dx = (int)(dx*cfg->sensitivity_val);
+			gs->move_dy = (int)(dy*cfg->sensitivity_val);
 			gs->move_type = GS_MOVE;
 			gs->move_dist = 0;
 			gs->move_dir = TR_NONE;

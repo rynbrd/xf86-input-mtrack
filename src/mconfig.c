@@ -23,12 +23,18 @@
 
 void mconfig_set_sensitivity(struct MConfig *cfg, double sensitivity)
 {
-	cfg->sensitivity_val = sensitivity;
+	if (sensitivity >= 1.0) {
+		cfg->sensitivity_big = sensitivity;
+		cfg->sensitivity_smalldiv = 1.0;
+	} else {
+		cfg->sensitivity_big = 1.0;
+		cfg->sensitivity_smalldiv = 1.0 / sensitivity;
+	}
 }
 
 double mconfig_get_sensitivity(const struct MConfig * cfg)
 {
-	return cfg->sensitivity_val;
+	return cfg->sensitivity_big / cfg->sensitivity_smalldiv;
 }
 
 void mconfig_defaults(struct MConfig* cfg)

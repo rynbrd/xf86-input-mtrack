@@ -133,8 +133,8 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
 				   axes_labels[0],
 #endif
-				   mt->caps.abs[MTDEV_POSITION_X].minimum,
-				   mt->caps.abs[MTDEV_POSITION_X].maximum,
+				   mt->caps.abs[MTDEV_POSITION_X].minimum * mt->cfg.sensitivity_smalldiv,
+				   mt->caps.abs[MTDEV_POSITION_X].maximum * mt->cfg.sensitivity_smalldiv,
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 12
 				   1, 0, 1, Absolute);
 #else
@@ -145,8 +145,8 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
 				   axes_labels[1],
 #endif
-				   mt->caps.abs[MTDEV_POSITION_Y].minimum,
-				   mt->caps.abs[MTDEV_POSITION_Y].maximum,
+				   mt->caps.abs[MTDEV_POSITION_Y].minimum * mt->cfg.sensitivity_smalldiv,
+				   mt->caps.abs[MTDEV_POSITION_Y].maximum * mt->cfg.sensitivity_smalldiv,
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 12
 				   1, 0, 1, Absolute);
 #else

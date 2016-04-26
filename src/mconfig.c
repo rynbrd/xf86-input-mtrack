@@ -21,6 +21,22 @@
 
 #include "mconfig.h"
 
+void mconfig_set_sensitivity(struct MConfig *cfg, double sensitivity)
+{
+	if (sensitivity >= 1.0) {
+		cfg->sensitivity_big = sensitivity;
+		cfg->sensitivity_smalldiv = 1.0;
+	} else {
+		cfg->sensitivity_big = 1.0;
+		cfg->sensitivity_smalldiv = 1.0 / sensitivity;
+	}
+}
+
+double mconfig_get_sensitivity(const struct MConfig * cfg)
+{
+	return cfg->sensitivity_big / cfg->sensitivity_smalldiv;
+}
+
 void mconfig_defaults(struct MConfig* cfg)
 {
 	// Configure MTState
@@ -76,7 +92,7 @@ void mconfig_defaults(struct MConfig* cfg)
 	cfg->rotate_rt_btn = DEFAULT_ROTATE_RT_BTN;
 	cfg->drag_enable = DEFAULT_DRAG_ENABLE;
 	cfg->drag_timeout = DEFAULT_DRAG_TIMEOUT;
-	cfg->sensitivity = DEFAULT_SENSITIVITY;
+	mconfig_set_sensitivity(cfg, DEFAULT_SENSITIVITY);
 }
 
 void mconfig_init(struct MConfig* cfg,
@@ -177,6 +193,6 @@ void mconfig_configure(struct MConfig* cfg,
 	cfg->drag_dist = MAXVAL(xf86SetIntOption(opts, "TapDragDist", DEFAULT_DRAG_DIST), 0);
 	cfg->axis_x_invert = xf86SetBoolOption(opts, "AxisXInvert", DEFAULT_AXIS_X_INVERT);
 	cfg->axis_y_invert = xf86SetBoolOption(opts, "AxisYInvert", DEFAULT_AXIS_Y_INVERT);
-	cfg->sensitivity = MAXVAL(xf86SetRealOption(opts, "Sensitivity", DEFAULT_SENSITIVITY), 0);
+	mconfig_set_sensitivity(cfg, MAXVAL(xf86SetRealOption(opts, "Sensitivity", DEFAULT_SENSITIVITY), 0));
 }
 

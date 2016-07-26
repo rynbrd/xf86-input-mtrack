@@ -47,47 +47,47 @@ of 1 will disable tapping and gestures but not movement. A value of 2 will
 disable all input. A value of 3 will also disable physical buttons. Integer.
 Default is 0.
 
-**Sensitivity** - 
+**Sensitivity** -
 Adjusts the sensitivity (movement speed) of the touchpad. This is a real number
 greater than or equal to zero. Default is 1. A value of 0 will disable pointer
 movement.
 
-**FingerHigh** - 
+**FingerHigh** -
 Defines the pressure at which a finger is detected as a touch. This is a
 percentage represented as an integer. Default is 5.
 
-**FingerLow** - 
+**FingerLow** -
 Defines the pressure at which a finger is detected as a release. This is a
 percentage represented as an integer. Default is 5.
 
-**IgnoreThumb** - 
+**IgnoreThumb** -
 Whether or not to ignore touches that are determined to be thumbs. Boolean
 value. Defaults to false.
 
-**IgnorePalm** - 
+**IgnorePalm** -
 Whether or not to ignore touches that are determined to be palms. Boolean
 value. Defaults to false.
 
-**DisableOnThumb** - 
+**DisableOnThumb** -
 Whether or not to disable the entire trackpad when a thumb is touching. Boolean
 value. Defaults to false.
 
-**DisableOnPalm** - 
+**DisableOnPalm** -
 Whether or not to disable the entire trackpad when a palm is touching. Boolean
 value. Defaults to false.
 
-**ThumbRatio** - 
+**ThumbRatio** -
 The width/length ratio of what's considered a thumb. It is expected that a
 thumb is longer than it is wide. This tells the driver how much longer.
 Percentage represented by an integer. Defaults to 70.
 
-**ThumbSize** - 
+**ThumbSize** -
 The minimum size of what's considered a thumb. It is expected that a thumb
 will be larger than other fingers. This is represented as a percentage of the
 maximum touch value and is dependent on the trackpad hardware. Integer value.
 Defaults to 25.
 
-**PalmSize** - 
+**PalmSize** -
 The minimum size of what's considered a palm. Palms are expected to be very
 large on the trackpad. This is represented as a percentage of the maximum touch
 value and is dependent on the trackpad hardware. Integer value. Defaults to 40.
@@ -97,11 +97,20 @@ The size of an area at the bottom of the trackpad where new touches are ignored
 (fingers traveling into this area from above will still be tracked). This is
 represented as a percentage of the total trackpad height. Defaults to 10.
 
-**ButtonEnable** - 
+**TopEdge** -
+The size of an area at the top of the trackpad where new touched are ignored if
+IgnoreTop is enabled. This is represented as percentage of the total trackpad
+height. Defaults to 10.
+
+**IgnoreTop** -
+Whether or not to ignore new touches on the top (as defined by the TopEdge
+property). Defaults to false.
+
+**ButtonEnable** -
 Whether or not to enable the physical buttons on or near the trackpad. Boolean
 value. Defaults to true.
 
-**ButtonIntegrated** - 
+**ButtonIntegrated** -
 Whether or not the physical buttons are integrated with the trackpad. If you
 have a one-piece trackpad like on newer MacBooks, this should be set to true.
 Button emulation depends on this value being correct. Boolean value. Defaults
@@ -119,150 +128,150 @@ those ClickFinger values that are enabled. So setting ClickFinger1 to 0 and
 enabling the other two will create two zones, one for ClickFinger2 and one for
 ClickFinger3. Boolean value. Defaults to false.
 
-**ButtonTouchExpire** - 
+**ButtonTouchExpire** -
 How long (in ms) to consider a touching finger as part of button emulation. A
 value of 0 will not expire touches. Integer value. Defaults to 100.
 
-**ClickFinger1** - 
+**ClickFinger1** -
 Which button to emulate when one finger is touching the trackpad during a
 click. Integer value. A value of 0 disables one-touch emulation. Defaults to 3.
 
-**ClickFinger2** - 
+**ClickFinger2** -
 Which button to emulate when two fingers are touching the trackpad during a
 click. Integer value. A value of 0 disabled one-touch emulation. Defaults to 2.
 
-**ClickFinger3** - 
+**ClickFinger3** -
 Which button to emulate when three fingers are touching the trackpad during a
 click. Integer value. A value of 0 disabled one-touch emulation. Defaults to 0.
 
-**TapButton1** - 
+**TapButton1** -
 Which button to emulate for one-finger tapping. Integer value. A value of 0
 disables one-finger tapping. Defaults to 1.
 
-**TapButton2** - 
+**TapButton2** -
 Which button to emulate for two-finger tapping. Integer value. A value of 0
 disables two-finger tapping. Defaults to 3.
 
-**TapButton3** - 
+**TapButton3** -
 Which button to emulate for three-finger tapping. Integer value. A value of 0
 disables three-finger tapping. Defaults to 2.
 
-**TapButton4** - 
+**TapButton4** -
 Which button to emulate for four-finger tapping. Integer value. A value of 0
 disables three-finger tapping. Defaults to 0.
 
-**ClickTime** - 
+**ClickTime** -
 When tapping, how much time to hold down the emulated button. Integer value
 representing milliseconds. Defaults to 50.
 
-**MaxTapTime** - 
+**MaxTapTime** -
 The amount of time to wait for a tap to release before counting it as a move.
 Integer value representing milliseconds. Defaults to 120.
 
-**MaxTapMove** - 
+**MaxTapMove** -
 How far a touch is allowed to move before counting it is no longer considered a
 tap. Integer value. Defaults to 400.
 
-**GestureClickTime** - 
+**GestureClickTime** -
 When a gesture triggers a click, how much time to hold down the emulated button.
 Integer value representing milliseconds. Defaults to 10.
 
-**GestureWaitTime** - 
+**GestureWaitTime** -
 Touches are allowed to transition from one gesture to another. For example, you
 may go from scrolling to swiping without releasing your fingers from the pad.
 This value is the amount of time you must be performing the new gesture before
 it is triggered. This prevents accidental touches from triggering other
 gestures. Integer value representing milliseconds. Defaults to 100.
 
-**ScrollDistance** - 
+**ScrollDistance** -
 For two finger scrolling. How far you must move your fingers before a button
 click is triggered. Integer value. Defaults to 150.
 
-**ScrollUpButton** - 
+**ScrollUpButton** -
 For two finger scrolling. The button that is triggered by scrolling up. Integer
 value. A value of 0 disables scrolling up. Defaults to 4.
 
-**ScrollDownButton** - 
+**ScrollDownButton** -
 For two finger scrolling. The button that is triggered by scrolling down.
 Integer value. A value of 0 disables scrolling down. Defaults to 5.
 
-**ScrollLeftButton** - 
+**ScrollLeftButton** -
 For two finger scrolling. The button that is triggered by scrolling left.
 Integer value. A value of 0 disables scrolling left. Defaults to 6.
 
-**ScrollRightButton** - 
+**ScrollRightButton** -
 For two finger scrolling. The button that is triggered by scrolling right.
 Integer value. A value of 0 disables scrolling right. Defaults to 7.
 
-**SwipeDistance** - 
+**SwipeDistance** -
 For three finger swiping. How far you must move your fingers before a button
 click is triggered. Integer value. Defaults to 700.
 
-**SwipeUpButton** - 
+**SwipeUpButton** -
 For three finger swiping. The button that is triggered by swiping up. Integer
 value. A value of 0 disables swiping up. Defaults to 8.
 
-**SwipeDownButton** - 
+**SwipeDownButton** -
 For three finger swiping. The button that is triggered by swiping down. Integer
 value. A value of 0 disables swiping down. Defaults to 9.
 
-**SwipeLeftButton** - 
+**SwipeLeftButton** -
 For three finger swiping. The button that is triggered by swiping left. Integer
 value. A value of 0 disables swiping left. Defaults to 10.
 
-**SwipeRightButton** - 
+**SwipeRightButton** -
 For three finger swiping. The button that is triggered by swiping right. Integer
 value. A value of 0 disables swiping right. Defaults to 11.
 
-**Swipe4Distance** - 
+**Swipe4Distance** -
 For four finger swiping. How far you must move your fingers before a button
 click is triggered. Integer value. Defaults to 700.
 
-**Swipe4UpButton** - 
+**Swipe4UpButton** -
 For four finger swiping. The button that is triggered by swiping up. Integer
 value. A value of 0 disables swiping up. Defaults to 8.
 
-**Swipe4DownButton** - 
+**Swipe4DownButton** -
 For four finger swiping. The button that is triggered by swiping down. Integer
 value. A value of 0 disables swiping down. Defaults to 9.
 
-**Swipe4LeftButton** - 
+**Swipe4LeftButton** -
 For four finger swiping. The button that is triggered by swiping left. Integer
 value. A value of 0 disables swiping left. Defaults to 10.
 
-**Swipe4RightButton** - 
+**Swipe4RightButton** -
 For four finger swiping. The button that is triggered by swiping right. Integer
 value. A value of 0 disables swiping right. Defaults to 11.
 
-**ScaleDistance** - 
+**ScaleDistance** -
 For pinch scaling. How far you must move your fingers before a button click is
 triggered. Integer value. Defaults to 150.
 
-**ScaleUpButton** - 
+**ScaleUpButton** -
 For pinch scaling. The button that is triggered by scaling up. Integer value. A
 value of 0 disables scaling up. Defaults to 12.
 
-**ScaleDownButton** - 
+**ScaleDownButton** -
 For pinch scaling. The button that is triggered by scaling down. Integer value.
 A value of 0 disables scaling down. Defaults to 13.
 
-**RotateDistance** - 
+**RotateDistance** -
 For two finger rotation. How far you must move your fingers before a button
 click is triggered. Integer value. Defaults to 150.
 
-**RotateLeftButton** - 
+**RotateLeftButton** -
 For two finger rotation. The button that is triggered by rotating left. Integer
 value. A value of 0 disables rotation left. Defaults to 14.
 
-**RotateRightButton** - 
+**RotateRightButton** -
 For two finger rotation. The button that is triggered by rotating right. Integer
 value. A value of 0 disables rotation right. Defaults to 15.
 
-**TapDragEnable** - 
+**TapDragEnable** -
 Whether or not to enable tap-to-drag functionality. Boolean value. Defaults to
 true.
 
-**TapDragTime** - 
+**TapDragTime** -
 The tap-to-drag timeout. This is how long the driver will wait after a single
 tap for a movement event before sending the click. Integer value representing
 milliseconds. Defaults to 350.

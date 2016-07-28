@@ -36,7 +36,9 @@
 #define DEFAULT_PALM_SIZE 40
 #define DEFAULT_BOTTOM_EDGE 10
 #define DEFAULT_TOP_EDGE 10
+#define DEFAULT_TOP_CORNERS 20
 #define DEFAULT_IGNORE_TOP 0
+#define DEFAULT_IGNORE_TOP_CORNERS 0
 #define DEFAULT_BUTTON_ENABLE 1
 #define DEFAULT_BUTTON_INTEGRATED 1
 #define DEFAULT_BUTTON_ZONES 0
@@ -111,7 +113,9 @@ struct MConfig {
 	int palm_size;		// Minimum touch size for a palm. 0 - 100
 	int bottom_edge;	// Percent of bottom of trackpad to ignore for new touches. 0 - 100
 	int top_edge;		// Percent of top of trackpad to ignore for new touches. 0 - 100
+	int top_corners;	// Percent of edges of trackpad to use as points to form triangles in the corners to ignore for new touches. 0 - 100
 	int ignore_top;		// Disable top. 0 or 1.
+	int ignore_top_corners;	// Disable top corners. 0 or 1.
 	int axis_x_invert;	// Whether or not to invert the x axis. 0 or 1.
 	int axis_y_invert;	// Whether or not to invert the y axis. 0 or 1.
 

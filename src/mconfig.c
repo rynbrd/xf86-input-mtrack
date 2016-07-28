@@ -133,7 +133,9 @@ void mconfig_configure(struct MConfig* cfg,
 	cfg->palm_size = CLAMPVAL(xf86SetIntOption(opts, "PalmSize", DEFAULT_PALM_SIZE), 0, 100);
 	cfg->bottom_edge = CLAMPVAL(xf86SetIntOption(opts, "BottomEdge", DEFAULT_BOTTOM_EDGE), 0, 100);
 	cfg->top_edge = CLAMPVAL(xf86SetIntOption(opts, "TopEdge", DEFAULT_TOP_EDGE), 0, 100);
+	cfg->top_corners = CLAMPVAL(xf86SetIntOption(opts, "TopCorners", DEFAULT_TOP_CORNERS), 0, 100);
 	cfg->ignore_top = xf86SetBoolOption(opts, "IgnoreTop", DEFAULT_IGNORE_TOP);
+	cfg->ignore_top_corners = xf86SetBoolOption(opts, "IgnoreTopCorners", DEFAULT_IGNORE_TOP_CORNERS);
 
 	// Configure Gestures
 	cfg->trackpad_disable = CLAMPVAL(xf86SetIntOption(opts, "TrackpadDisable", DEFAULT_TRACKPAD_DISABLE), 0, 3);

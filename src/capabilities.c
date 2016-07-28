@@ -163,6 +163,17 @@ int get_cap_yflip(const struct Capabilities *cap, int y)
 	return i->maximum - (y - i->minimum);
 }
 
+int get_cap_zero_based_x(const struct Capabilities* cap, int x) {
+	const struct input_absinfo *i = &cap->abs[MTDEV_POSITION_X];
+	return x - i->minimum;
+}
+
+int get_cap_zero_based_y(const struct Capabilities* cap, int y) {
+	const struct input_absinfo *i = &cap->abs[MTDEV_POSITION_Y];
+	return y - i->minimum;
+}
+
+
 void output_capabilities(const struct Capabilities *cap)
 {
 	char line[1024];

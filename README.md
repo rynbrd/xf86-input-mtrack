@@ -106,6 +106,16 @@ height. Defaults to 10.
 Whether or not to ignore new touches on the top (as defined by the TopEdge
 property). Defaults to false.
 
+**TopCorners** -
+The percentage of the top edge and the left edge of the trackpad to form a
+triangle with in the top left corner. Same applies for the top right corner.
+This zone can be used to ignore touches using the `IgnoreTopCorners` property.
+Defaults to 20.
+
+**IgnoreTopCorners** -
+Wether or not to ignore new touches in the top left and right corners of the
+trackpad (as defined by `TopCorners`). Defaults to false.
+
 **ButtonEnable** -
 Whether or not to enable the physical buttons on or near the trackpad. Boolean
 value. Defaults to true.

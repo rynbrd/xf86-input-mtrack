@@ -140,6 +140,8 @@ static int touch_append(struct MTState* ms,
 	else {
 		x = cfg->axis_x_invert ? get_cap_xflip(caps, fs->position_x) : fs->position_x;
 		y = cfg->axis_y_invert ? get_cap_yflip(caps, fs->position_y) : fs->position_y;
+		x = get_cap_zero_based_x(caps, x);
+		y = get_cap_zero_based_y(caps, y);
 		ms->touch[n].state = 0U;
 		ms->touch[n].flags = 0U;
 		timercp(&ms->touch[n].down, &hs->evtime);
@@ -168,6 +170,8 @@ static void touch_update(struct MTState* ms,
 	int x, y;
 	x = cfg->axis_x_invert ? get_cap_xflip(caps, fs->position_x) : fs->position_x;
 	y = cfg->axis_y_invert ? get_cap_yflip(caps, fs->position_y) : fs->position_y;
+	x = get_cap_zero_based_x(caps, x);
+	y = get_cap_zero_based_y(caps, y);
 	ms->touch[touch].dx = x - ms->touch[touch].x;
 	ms->touch[touch].dy = y - ms->touch[touch].y;
 	ms->touch[touch].total_dx += ms->touch[touch].dx;
@@ -231,24 +235,45 @@ static void touches_update(struct MTState* ms,
 				SETBIT(ms->touch[n].state, MT_THUMB);
 			else
 				CLEARBIT(ms->touch[n].state, MT_THUMB);
-			
+
 			if (is_palm(cfg, &hs->data[i]))
 				SETBIT(ms->touch[n].state, MT_PALM);
 			else
 				CLEARBIT(ms->touch[n].state, MT_PALM);
-			
+
 			if (ms->touch[n].y > (100 - cfg->bottom_edge)*cfg->pad_height/100) {
 				if (GETBIT(ms->touch[n].state, MT_NEW))
 					SETBIT(ms->touch[n].state, MT_BOTTOM_EDGE);
 			}
 			else
 				CLEARBIT(ms->touch[n].state, MT_BOTTOM_EDGE);
-			
+
+			if (ms->touch[n].y < (cfg->top_edge * cfg->pad_height)/100) {
+				if (GETBIT(ms->touch[n].state, MT_NEW))
+					SETBIT(ms->touch[n].state, MT_TOP_EDGE);
+			}
+			else
+				CLEARBIT(ms->touch[n].state, MT_TOP_EDGE);
+
+
+			if (ms->touch[n].y < (cfg->top_corners * cfg->pad_height)/100) {
+				int xfrac = ms->touch[n].x * 100 / cfg->pad_width;
+				int yfrac = ms->touch[n].y * 100 / cfg->pad_height;
+				if ((xfrac + yfrac < cfg->top_corners) || ((100-xfrac) + yfrac < cfg->top_corners)) {
+					if (GETBIT(ms->touch[n].state, MT_NEW))
+						SETBIT(ms->touch[n].state, MT_TOP_CORNERS);
+				} else
+					CLEARBIT(ms->touch[n].state, MT_TOP_CORNERS);
+			} else
+				CLEARBIT(ms->touch[n].state, MT_TOP_CORNERS);
+
 			MODBIT(ms->touch[n].state, MT_INVALID,
 				GETBIT(ms->touch[n].state, MT_THUMB) && cfg->ignore_thumb ||
 				GETBIT(ms->touch[n].state, MT_PALM) && cfg->ignore_palm ||
+				GETBIT(ms->touch[n].state, MT_TOP_EDGE) && cfg->ignore_top ||
+				GETBIT(ms->touch[n].state, MT_TOP_CORNERS) && cfg->ignore_top_corners ||
 				GETBIT(ms->touch[n].state, MT_BOTTOM_EDGE));
-			
+
 			disable |= cfg->disable_on_thumb && GETBIT(ms->touch[n].state, MT_THUMB);
 			disable |= cfg->disable_on_palm && GETBIT(ms->touch[n].state, MT_PALM);
 		}
@@ -291,7 +316,7 @@ static void mtstate_output(const struct MTState* ms,
 						ms->touch[i].direction, timertoms(&ms->touch[i].down), timertoms(&tv));
 		}
 		else if (GETBIT(ms->touch[i].state, MT_NEW)) {
-			xf86Msg(X_INFO, "  new      p(%d, %d) d(%+d, %+d) dir(%f) down(%llu)\n",
+			xf86Msg(X_INFO, "  new	  p(%d, %d) d(%+d, %+d) dir(%f) down(%llu)\n",
 						ms->touch[i].x, ms->touch[i].y, ms->touch[i].dx, ms->touch[i].dy,
 						ms->touch[i].direction, timertoms(&ms->touch[i].down));
 		}

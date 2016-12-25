@@ -92,6 +92,11 @@ The minimum size of what's considered a palm. Palms are expected to be very
 large on the trackpad. This is represented as a percentage of the maximum touch
 value and is dependent on the trackpad hardware. Integer value. Defaults to 40.
 
+**TopEdge** -
+The size of an area at the top of the trackpad where the new touches are ignored
+(fingers traveling into this area from below will still be tracked). This is
+Represented as a percentage of the total trackpad height. Defaults to 10.
+
 **BottomEdge** -
 The size of an area at the bottom of the trackpad where new touches are ignored
 (fingers traveling into this area from above will still be tracked). This is

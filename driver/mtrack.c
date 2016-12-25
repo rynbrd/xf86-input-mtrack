@@ -42,6 +42,10 @@
 typedef InputInfoPtr LocalDevicePtr;
 #endif
 
+#ifndef XI86_SERVER_FD
+#define XI86_SERVER_FD 0x20
+#endif
+
 /* button mapping simplified */
 #define PROPMAP(m, x, y) m[x] = XIGetKnownProperty(y)
 
@@ -95,7 +99,9 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 	initButtonLabels(btn_labels);
 #endif
 
-	local->fd = xf86OpenSerial(local->options);
+	if (!(local->flags & XI86_SERVER_FD))
+		local->fd = xf86OpenSerial(local->options);
+
 	if (local->fd < 0) {
 		xf86Msg(X_ERROR, "mtrack: cannot open device\n");
 		return !Success;
@@ -104,7 +110,8 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 		xf86Msg(X_ERROR, "mtrack: cannot configure device\n");
 		return !Success;
 	}
-	xf86CloseSerial(local->fd);
+	if (!(local->flags & XI86_SERVER_FD))
+		xf86CloseSerial(local->fd);
 
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 3
 	InitPointerDeviceStruct((DevicePtr)dev,
@@ -162,7 +169,9 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 static int device_on(LocalDevicePtr local)
 {
 	struct MTouch *mt = local->private;
-	local->fd = xf86OpenSerial(local->options);
+	xf86Msg(X_INFO, "mtrack: enabling device\n");
+	if (!(local->flags & XI86_SERVER_FD))
+		local->fd = xf86OpenSerial(local->options);
 	if (local->fd < 0) {
 		xf86Msg(X_ERROR, "mtrack: cannot open device\n");
 		return !Success;
@@ -178,10 +187,14 @@ static int device_on(LocalDevicePtr local)
 static int device_off(LocalDevicePtr local)
 {
 	struct MTouch *mt = local->private;
+
+	xf86Msg(X_INFO, "mtrack: disabling device\n");
 	xf86RemoveEnabledDevice(local);
 	if (mtouch_close(mt))
 		xf86Msg(X_WARNING, "mtrack: cannot ungrab device\n");
-	xf86CloseSerial(local->fd);
+	if (!(local->flags & XI86_SERVER_FD)) {
+		xf86CloseSerial(local->fd);
+	}
 	return Success;
 }
 
@@ -317,7 +330,8 @@ static InputDriverRec MTRACK = {
 	preinit,
 	uninit,
 	NULL,
-	0
+	0,
+	XI86_DRV_CAP_SERVER_FD
 };
 
 static XF86ModuleVersionInfo moduleVersion = {

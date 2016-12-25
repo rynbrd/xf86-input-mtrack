@@ -162,6 +162,9 @@ struct MConfig {
 	int drag_wait;			// How long to wait before triggering button down? >= 0
 	int drag_dist;			// How far is the finger allowed to move during wait time? >= 0
 	double sensitivity;		// Mouse movement multiplier. >= 0
+	int absolute_mode;		// mode of device:
+						// FALSE: RELATIVE: for touchpad (default)
+						// TRUE:  ABSOLUTE: for touchscreen
 };
 
 /* Load the MConfig struct with its defaults.

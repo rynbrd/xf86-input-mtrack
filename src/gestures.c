@@ -752,9 +752,9 @@ void gestures_extract(struct MTouch* mt)
 	timercp(&mt->gs.time, &mt->hs.evtime);
 
 	dragging_update(&mt->gs);
-	buttons_update(&mt->gs, &mt->cfg, &mt->hs, &mt->state);
-	tapping_update(&mt->gs, &mt->cfg, &mt->state);
-	moving_update(&mt->gs, &mt->cfg, &mt->state);
+	buttons_update(&mt->gs, mt->mcfg, &mt->hs, &mt->state);
+	tapping_update(&mt->gs, mt->mcfg, &mt->state);
+	moving_update(&mt->gs, mt->mcfg, &mt->state);
 	delayed_update(&mt->gs);
 }
 

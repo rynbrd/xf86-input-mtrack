@@ -36,7 +36,7 @@ struct MTouch {
 	struct Capabilities caps;
 	struct HWState hs;
 	struct MTState state;
-	struct MConfig cfg;
+	struct MConfig *mcfg;
 	struct Gestures gs;
 };
 

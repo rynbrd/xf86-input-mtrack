@@ -178,5 +178,9 @@ void mconfig_configure(struct MConfig* cfg,
 	cfg->axis_x_invert = xf86SetBoolOption(opts, "AxisXInvert", DEFAULT_AXIS_X_INVERT);
 	cfg->axis_y_invert = xf86SetBoolOption(opts, "AxisYInvert", DEFAULT_AXIS_Y_INVERT);
 	cfg->sensitivity = MAXVAL(xf86SetRealOption(opts, "Sensitivity", DEFAULT_SENSITIVITY), 0);
+
+	/* install shared memory or normal memory for parameters */
+	cfg->shm_config = xf86SetBoolOption(opts, "SHMConfig", FALSE);
+
 }
 

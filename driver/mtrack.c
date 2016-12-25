@@ -23,6 +23,8 @@
 #include "mtouch.h"
 #include "mprops.h"
 
+#include <sys/shm.h>
+
 #include <xf86Module.h>
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
 #include <X11/Xatom.h>
@@ -153,7 +155,7 @@ static int device_init(DeviceIntPtr dev, LocalDevicePtr local)
 				   1, 0, 1);
 #endif
 	xf86InitValuatorDefaults(dev, 1);
-	mprops_init(&mt->cfg, local);
+	mprops_init(mt->mcfg, local);
 	XIRegisterPropertyHandler(dev, mprops_set_property, NULL, NULL);
 
 	return Success;
@@ -185,8 +187,58 @@ static int device_off(LocalDevicePtr local)
 	return Success;
 }
 
+static struct MConfig* allocate_shm(int flag)
+{
+	struct MConfig *mcfg = NULL;
+	if (flag)  {
+		int shmid = shmget(SHM_MTRACK, 0, 0);
+		if (shmid != -1)
+			shmctl(shmid, IPC_RMID, NULL);
+
+		shmid = shmget(SHM_MTRACK, sizeof(struct MConfig), 0776 | IPC_CREAT);
+		if (shmid == -1) {
+			xf86Msg(X_ERROR, "Error shmget\n");
+			goto error;
+		}    
+
+		mcfg = (struct MConfig *)shmat(shmid, NULL, 0);
+		if (mcfg == NULL) {
+			xf86Msg(X_ERROR, "Error shmat\n");
+			goto error;
+		}
+	} else {
+		mcfg = calloc(1, sizeof(struct MConfig));
+		if (mcfg == NULL)
+			goto error;
+	}
+
+error:
+	return mcfg;
+}
+
+static void free_shm(struct MTouch *mt, int flag)
+{
+	if (flag) {
+		int shmid = shmget(SHM_MTRACK, 0, 0);
+		if (shmid != -1)
+			shmctl(shmid, IPC_RMID, NULL);
+	} else
+		free(mt->mcfg);
+
+	mt->mcfg = NULL;
+}
+
 static int device_close(LocalDevicePtr local)
 {
+	struct MTouch *mt = (struct MTouch *)local->private;
+
+	if (mt->mcfg)
+		free_shm(mt, xf86SetBoolOption(local->options,
+								"SHMConfig", FALSE));
+
+	free(mt);
+	local->private = NULL;
+
 	return Success;
 }
 
@@ -250,7 +302,6 @@ static Bool device_control(DeviceIntPtr dev, int mode)
 	}
 }
 
-
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 12
 static int preinit(InputDriverPtr drv, InputInfoPtr pInfo, int flags)
 {
@@ -269,9 +320,19 @@ static int preinit(InputDriverPtr drv, InputInfoPtr pInfo, int flags)
     xf86CollectInputOptions(pInfo, NULL);
     xf86OptionListReport(pInfo->options);
     xf86ProcessCommonOptions(pInfo, pInfo->options);
-    mconfig_configure(&mt->cfg, pInfo->options);
+
+	mt->mcfg =
+		allocate_shm(xf86SetBoolOption(pInfo->options, "SHMConfig", FALSE));
+	if (mt->mcfg == NULL)
+		goto error;
+
+	mconfig_configure(mt->mcfg, pInfo->options);
 
 	return Success;
+
+error:
+	free(pInfo->private);
+	return BadAlloc;
 }
 #else
 static InputInfoPtr preinit(InputDriverPtr drv, IDevPtr dev, int flags)
@@ -295,9 +356,16 @@ static InputInfoPtr preinit(InputDriverPtr drv, IDevPtr dev, int flags)
 	xf86CollectInputOptions(local, NULL, NULL);
 	xf86OptionListReport(local->options);
 	xf86ProcessCommonOptions(local, local->options);
-	mconfig_configure(&mt->cfg, local->options);
+
+	mt->mcfg =
+		allocate_shm(xf86SetBoolOption(local->options, "SHMConfig", FALSE));
+	if (mt->mcfg == NULL)
+		goto error;
+
+	mconfig_configure(mt->mcfg, local->options);
 
 	local->flags |= XI86_CONFIGURED;
+
  error:
 	return local;
 }
@@ -305,8 +373,16 @@ static InputInfoPtr preinit(InputDriverPtr drv, IDevPtr dev, int flags)
 
 static void uninit(InputDriverPtr drv, InputInfoPtr local, int flags)
 {
-	free(local->private);
-	local->private = 0;
+	struct MTouch *mt = (struct MTouch *)local->private;
+	if (!mt)
+		return;
+
+	if (mt->mcfg)
+		free_shm(mt, xf86SetBoolOption(local->options,
+								"SHMConfig", FALSE));
+
+	free(mt);
+	local->private = NULL;
 	xf86DeleteInput(local, 0);
 }
 
